@@ -19,14 +19,15 @@ setwd("/Users/korydkantenga/Dropbox/Teaching/Economic_Statistics/103-601/Project
 #### Loading Data ####
 ######################
 
-Shondaland <- read.csv("shondalandsurvey.csv")
+ShondalandOrig <- read.csv("shondalandsurvey.csv")
+
 
 ###################################
 #### Summarize Wages by Gender ####
 ###################################
 
 #Removing Missing Wages due to unemployed workers and students
-Shondaland <- na.omit(Shondaland)
+Shondaland <- na.omit(ShondalandOrig)
 
 #Table1a: Mean Wages by Gender
 Table1a <- by(Shondaland[,"dailywage"],Shondaland[,"female"],mean)
@@ -53,4 +54,33 @@ Shondaland$agesq = Shondaland$age*Shondaland$age
 #Log Wage Regression
 Table3 <- summary(lm(logdailywage ~ age + agesq + factor(educ), data = Shondaland))
 print(Table3)
+
+########################################
+#### Summarise Mean Wages by Age #######
+########################################
+
+#Create Table of Mean Daily Wage by Age
+meanwage_age <- aggregate(dailywage ~ age + agesq, data = Shondaland, mean)
+
+#Plot Table
+pdf('meanwage_age.pdf') #Name file with plot 'meanwage_age.pdf'
+plot(meanwage_age$age, meanwage_age$dailywage, type = "l", col = "red", main = "Average Daily Wage", xlab = "Age", ylab = "Mean of Daily Wage")
+dev.off()
+
+########################################
+#### Histogram of Wages by Gender ######
+########################################
+
+#Create Male/Female Subsets with Log Wages Only
+h_men <- subset(Shondaland, female == 0 ,select = logdailywage)
+h_women <- subset(Shondaland, female == 1 ,select = logdailywage)
+
+#Plot Histograms to Overlap
+pdf('histogram.pdf') #Name file with plot 'histogram.pdf'
+hist(h_men[,"logdailywage"], col=rgb(1,0,0,0.5), main="Overlapping Histograms Example", xlab="Log Daily Wage")
+hist(h_women[,"logdailywage"], col=rgb(0,0,1,0.5), add=T)
+box() #put a box around the plot
+dev.off() #close and save plot
+
+#Note: All plots will be saved in your current directory.
 
