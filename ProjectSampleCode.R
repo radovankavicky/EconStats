@@ -2,7 +2,7 @@
 # Statistical Discrimination Sample Code
 # Author: Kory Kantenga
 # Institute: University of Pennsylvania
-# Date: 2 November 2014
+# Date: 1 December 2014
 
 ###########################################################################################
 
@@ -71,8 +71,8 @@ dev.off()
 #### Histogram of Wages by Gender ######
 ########################################
 
-#Create Male/Female Subsets with Log Wages Only
-h_men <- subset(Shondaland, female == 0 ,select = logdailywage)
+#Create Male/Female Sub-datasets with Log Wages Only
+h_men <- subset(Shondaland, female == 0 , select = logdailywage)
 h_women <- subset(Shondaland, female == 1 ,select = logdailywage)
 
 #Plot Histograms to Overlap
@@ -82,5 +82,32 @@ hist(h_women[,"logdailywage"], col=rgb(0,0,1,0.5), add=T)
 box() #put a box around the plot
 dev.off() #close and save plot
 
-#Note: All plots will be saved in your current directory.
+#Note: All plots will be saved in your current directory. These histograms are presenting overlapping but may be done separately.
+
+########################################
+#### Create New Education Variables ####
+########################################
+
+#Tablate Education Variable to see what categories have entries
+print(t(tabulate(Shondaland$educ))) #t() command makes table output a vector for viewing
+
+#Declare New Dummy Variables in Shondaland Dataset with zeros
+Shondaland$belowHS       <- 0
+Shondaland$highschool    <- 0
+Shondaland$somecollege   <- 0
+Shondaland$bachelors     <- 0
+Shondaland$bachelorsplus <- 0
+
+#put 1 where education is in that category
+Shondaland$belowHS[which(Shondaland$educ < 73)] <- 1 
+Shondaland$highschool[which(Shondaland$educ == 73)] <- 1
+Shondaland$somecollege[which(Shondaland$educ >= 80 & Shondaland$educ<=110)] <- 1
+Shondaland$bachelors[which(Shondaland$educ == 111)] <- 1
+Shondaland$bachelors[which(Shondaland$educ >= 112)] <- 1
+
+#Print first few observations to check variables
+print(head(Shondaland))
+
+
+
 
